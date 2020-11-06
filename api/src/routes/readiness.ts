@@ -2,11 +2,11 @@
 import { RouteOptions } from 'fastify'
 
 const ReadinessRoute : RouteOptions = {
-    method: 'GET',
-    url: '/',
-    async handler() {
-        return true
-    },
+  method: 'GET',
+  url: '/',
+  async handler() {
+    return true
+  },
 }
 
 export default ReadinessRoute

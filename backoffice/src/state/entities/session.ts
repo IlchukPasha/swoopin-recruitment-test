@@ -1,8 +1,8 @@
 import {
     observable, action, computed, reaction,
 } from 'mobx'
-import {axios, base64} from "../../utils/misc";
-import {AxiosInstance} from "axios";
+import { axios, base64 } from "../../utils/misc";
+import { AxiosInstance } from "axios";
 
 export default class StateSession {
     configuration = null
@@ -60,10 +60,13 @@ export default class StateSession {
 
         // @ts-ignore
         this.token = token
+
+        if (this.api)
+            this.api.defaults.headers.common.Authorization = `Bearer ${token}`;
     }
 
-    @action.bound async connect({ login, password } : { login: string, password: string}) {
-        // FIXME
+    @action.bound async connect({ login, password }: { login: string, password: string }) {
+        return await this?.api.post('login', { login, password })
     }
 
     @observable locale = null

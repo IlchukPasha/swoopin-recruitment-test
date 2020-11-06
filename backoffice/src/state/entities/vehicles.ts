@@ -3,8 +3,8 @@ import {
 } from 'mobx'
 import { now } from 'mobx-utils'
 
-import {moment, base64, axios} from 'utils/misc'
-import {AxiosInstance} from "axios";
+import { moment, base64, axios } from 'utils/misc'
+import { AxiosInstance } from "axios";
 
 type Vehicle = {
     id: string,
@@ -44,28 +44,45 @@ export default class StateVehicles {
                     responseType: 'json',
                 })
 
+                this.api.interceptors.request.use(function (config) {
+                    const token = localStorage.getItem('token');
+                    config.headers.Authorization = token ? `Bearer ${token}` : '';
+                    return config;
+                });
+
+
                 autorun(() => {
                     if (session.online && session.token) {
-                        this.updateVehicles(session).then(() => {})
+                        this.updateVehicles(session).then(() => { })
                     }
                 })
 
                 autorun(() => {
                     now(1000)
                     if (session.online && session.token) {
-                        this.updateVehicles(session).then(() => {})
+                        this.updateVehicles(session).then(() => { })
                     }
                 })
 
                 when(() => session.token, () => {
-                    this.updateVehicles(session).then(() => {})
+                    this.updateVehicles(session).then(() => { })
                 })
             })
         }
     }
 
     @action.bound async updateVehicles(session: any) {
-        // FIXME
+        await this.api?.get("vehicles").then((res) => {
+            this.updateList(res.data)
+        });
+    }
+
+    @action.bound async setOnline(id: string) {
+        await this.api?.post(`vehicles/online/${id}`);
+    }
+
+    @action.bound async setOffline(id: string) {
+        await this.api?.post(`vehicles/offline/${id}`);
     }
 
     @action.bound updateList(vehicles: any[]) {
@@ -76,6 +93,7 @@ export default class StateVehicles {
                 return {
                     ...vehicle,
                     vehicle: vehicleTypes[vehicle.vehicle] ? vehicleTypes[vehicle.vehicle] : 'Inconnu',
+                    updateTime: moment(vehicle.updateTime).format("DD/MM/YYYY-HH:mm:ss"),
                 }
             })
     }
@@ -84,15 +102,19 @@ export default class StateVehicles {
         this.selectedVehicleId = id
     }
 
-    @computed get all() : Vehicle[] {
+    @computed get all(): Vehicle[] {
         return this.list
     }
 
-    @computed get online() : Vehicle[] {
+    @computed get online(): Vehicle[] {
         return this.list.filter((vehicle: any) => vehicle.online)
     }
 
-    @computed get selectedVehicle() : Vehicle | null {
+    @computed get offline(): Vehicle[] {
+        return this.list.filter((vehicle: any) => !vehicle.online)
+    }
+
+    @computed get selectedVehicle(): Vehicle | null {
         if (this.selectedVehicleId) {
             const vehicle = this.list.find((vehicle: any) => vehicle.id === this.selectedVehicleId)
             if (vehicle) {

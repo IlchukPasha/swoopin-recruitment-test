@@ -62,7 +62,7 @@
       text-transform: uppercase;
       opacity: 0.5;
       font-size: 0.7rem;
-      margin-top: 0.2em;
+      padding: 0.4em 0;
       line-height: 1.1em;
     }
   }
@@ -145,6 +145,42 @@
         font-size: 0.7rem;
         margin-left: 0.25rem;
       }
+    }
+  }
+
+  &__speed {
+    &--hidden {
+      display: none;
+    }
+
+    &-theme {
+      font-weight: 500;
+      margin-bottom: -0.25em;
+      font-size: 0.9rem
+    }
+
+    &-background {
+      font-weight: 400;
+      opacity: 0.5;
+      font-size: 0.8rem;
+    }
+  }
+
+  &__temperature {
+    &--hidden {
+      display: none;
+    }
+
+    &-theme {
+      font-weight: 500;
+      margin-bottom: -0.25em;
+      font-size: 0.9rem
+    }
+
+    &-background {
+      font-weight: 400;
+      opacity: 0.5;
+      font-size: 0.8rem;
     }
   }
 

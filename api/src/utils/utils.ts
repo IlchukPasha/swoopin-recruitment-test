@@ -7,7 +7,7 @@ const isFunction = (functionToCheck: any) => functionToCheck
 const printJSON = (object: any) => console.info(colorize(JSON.stringify(object, null, 4)))
 
 export {
-    isFunction,
-    colorize,
-    printJSON,
+  isFunction,
+  colorize,
+  printJSON,
 }
